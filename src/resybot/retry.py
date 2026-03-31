@@ -172,14 +172,23 @@ def retry_booking(
             t_done = time.perf_counter()
             elapsed_ms = int((t_done - t_attempt) * 1000)
             offset_ms = int((t_done - t_snipe_start) * 1000)
-            attempt_log.append(f"#{attempt}: {elapsed_ms}ms @ +{offset_ms}ms -> ERROR {type(e).__name__}: {e}")
+            err_str = str(e)[:100]
+            attempt_log.append(f"#{attempt}: {elapsed_ms}ms @ +{offset_ms}ms -> ERROR {type(e).__name__}: {err_str}")
 
             if attempt % 10 == 0:
                 logger.exception("Attempt %d failed", attempt)
+
+            # If rate limited (429), back off briefly then continue
+            if "429" in str(e):
+                time.sleep(0.5)
+
             # If book fails with cached token, it might be stale
             if cached_book_tokens and attempt <= 3:
                 logger.info("Clearing cached tokens (may be stale after error)")
                 cached_book_tokens = {}
+
+        # Small delay between attempts to avoid 429 rate limiting
+        time.sleep(0.05)
 
     # --- FAILURE ---
     t_end = time.perf_counter()
