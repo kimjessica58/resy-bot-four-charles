@@ -1,0 +1,60 @@
+auth:
+  api_key: "VbWk7s3L4KiK5fzlO7JD3Q5EYolJI7n5"
+  auth_token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3Nzg3NzczNzUsInVpZCI6MTM4MzkzOTUsImd0IjoiY29uc3VtZXIiLCJncyI6W10sImxhbmciOiJlbi11cyIsImV4dHJhIjp7Imd1ZXN0X2lkIjo2NjIxOTQ1N319.AAL1Jsw09HLu15aQES5ZKPsnhWpb6heYBY6orFtZN2QGcFjJ7Hp3kLXIVUpsvdYSu8zhnn8KKH2SyDmwizT_sJGpAbexys6Rzgy1MIzyzcNgn-HEOnxcqwaUF5HfBJ-DISNafpF-gGEzQz-kvTWs1iy9Dk8VKxl9Wr3VQ9Fn4bFnKk2O"
+
+settings:
+  retry_timeout_seconds: 10
+  retry_interval_seconds: 0.1   # 100ms between retries for maximum speed
+  dry_run: false
+
+logging:
+  level: "DEBUG"
+  file: "logs/resybot.log"
+
+notifications:
+  - type: console
+
+restaurants:
+  - name: "4 Charles Prime Rib"
+    venue_id: 834
+    days_ahead: 21             # Automatically targets the date 21 days from today
+    party_size: 3
+    snipe_time: "09:00:00"     # Reservations drop at 9 AM
+    preferences:
+      - time: "17:00:00"       # 5:00 PM
+      - time: "17:30:00"       # 5:30 PM
+      - time: "18:00:00"       # 6:00 PM
+      - time: "18:30:00"       # 6:30 PM
+      - time: "19:00:00"       # 7:00 PM
+      - time: "19:30:00"       # 7:30 PM
+      - time: "20:00:00"       # 8:00 PM
+      - time: "20:30:00"       # 8:30 PM
+      - time: "21:00:00"       # 9:00 PM
+      - time: "21:30:00"       # 9:30 PM
+      - time: "22:00:00"       # 10:00 PM
+
+  - name: "Ha's Snack Bar"
+    venue_id: 85855
+    days_ahead: 20
+    party_size: 2
+    snipe_time: "12:00:00"        # Reservations drop at 12 PM
+    preferences:
+      - time: "21:30:00"       # 9:30 PM
+      - time: "21:00:00"       # 9:00 PM
+      - time: "20:30:00"       # 8:30 PM
+      - time: "20:00:00"       # 8:00 PM
+      - time: "19:30:00"       # 7:30 PM
+      - time: "19:00:00"       # 7:00 PM
+
+  - name: "Odo East Village"
+    venue_id: 94758
+    days_ahead: 30
+    party_size: 2
+    snipe_time: "00:00:00"        # Reservations drop at 12 AM midnight
+    preferences:
+      - time: "21:30:00"       # 9:30 PM
+      - time: "21:00:00"       # 9:00 PM
+      - time: "20:30:00"       # 8:30 PM
+      - time: "20:00:00"       # 8:00 PM
+      - time: "19:30:00"       # 7:30 PM
+      - time: "19:00:00"       # 7:00 PM
