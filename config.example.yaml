@@ -1,0 +1,51 @@
+auth:
+  # Extract these from browser DevTools on resy.com:
+  #   1. Log into resy.com
+  #   2. Open DevTools → Network tab
+  #   3. Look for requests to api.resy.com
+  #   4. Copy the "Authorization" header value (after "ResyAPI api_key=")
+  #   5. Copy the "x-resy-auth-token" header value
+  api_key: "YOUR_API_KEY"
+  auth_token: "YOUR_AUTH_TOKEN"
+
+settings:
+  retry_timeout_seconds: 10    # How long to keep retrying after snipe time
+  retry_interval_seconds: 0.5  # Pause between retry attempts
+  dry_run: false               # Set true to test without actually booking
+
+logging:
+  level: "INFO"                # DEBUG, INFO, WARNING, ERROR
+  file: "logs/resybot.log"
+
+notifications:
+  - type: console              # Always prints to stdout
+
+  # Uncomment for email notifications:
+  # - type: email
+  #   smtp_host: "smtp.gmail.com"
+  #   smtp_port: 587
+  #   username: "you@gmail.com"
+  #   password: "your-app-password"
+  #   to: "you@gmail.com"
+
+restaurants:
+  - name: "Tatiana"
+    venue_id: 12345            # Find this in the URL on resy.com
+    date: "2026-04-15"         # YYYY-MM-DD
+    party_size: 2
+    snipe_time: "09:00:00"     # When reservations drop (HH:MM:SS)
+    preferences:               # Priority ordered — first match wins
+      - time: "19:00:00"
+        table_type: "Dining Room"
+      - time: "19:30:00"       # No table_type = any table type
+      - time: "20:00:00"
+
+  # Add more restaurants as needed:
+  # - name: "Don Angie"
+  #   venue_id: 67890
+  #   date: "2026-04-15"
+  #   party_size: 4
+  #   snipe_time: "09:00:00"
+  #   preferences:
+  #     - time: "18:30:00"
+  #     - time: "19:00:00"
