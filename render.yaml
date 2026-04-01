@@ -2,7 +2,7 @@ services:
   - type: cron
     name: resybot-4charles
     runtime: python
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt && pip install -e .
     startCommand: python -m resybot -c config.yaml --restaurant "4 Charles Prime Rib"
     schedule: "57 12 * * *"  # 8:57 AM ET (UTC-4)
     envVars:
@@ -12,7 +12,7 @@ services:
   - type: cron
     name: resybot-has-snack-bar
     runtime: python
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt && pip install -e .
     startCommand: python -m resybot -c config.yaml --restaurant "Ha's Snack Bar"
     schedule: "57 15 * * *"  # 11:57 AM ET (UTC-4)
     envVars:
@@ -22,7 +22,7 @@ services:
   - type: cron
     name: resybot-odo
     runtime: python
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt && pip install -e .
     startCommand: python -m resybot -c config.yaml --restaurant "Odo East Village"
     schedule: "57 3 * * *"   # 11:57 PM ET (UTC-4)
     envVars:
