@@ -14,13 +14,21 @@ logger = logging.getLogger(__name__)
 EARLY_START_MS = 250
 
 
-def _seconds_until(snipe_time_str: str) -> float:
-    """Return seconds until snipe time. If it's already past today, target tomorrow."""
+def _seconds_until(snipe_time_str: str, allow_next_day: bool = False) -> float:
+    """Return seconds until snipe time today.
+
+    If allow_next_day is True and the time has passed, target tomorrow
+    (used for the initial wait when cron starts early).
+    Otherwise returns 0 if already past (used for snipe-time countdown).
+    """
     now = datetime.now()
     h, m, s = (int(x) for x in snipe_time_str.split(":"))
     target = now.replace(hour=h, minute=m, second=s, microsecond=0)
     if target <= now:
-        target += timedelta(days=1)
+        if allow_next_day:
+            target += timedelta(days=1)
+        else:
+            return 0.0
     return (target - now).total_seconds()
 
 
@@ -64,11 +72,11 @@ def retry_booking(
     # --- PRE-SNIPE PREPARATION ---
     # Use polling sleep instead of one long sleep — survives laptop sleep/wake.
     # Checks the real clock every 5 seconds so we never oversleep.
-    wait = _seconds_until(restaurant.snipe_time)
+    wait = _seconds_until(restaurant.snipe_time, allow_next_day=True)
     if wait > 30:
         logger.info("PREP waiting %.0fs until 30s before snipe (polling)", wait - 30)
-        while _seconds_until(restaurant.snipe_time) > 30:
-            time.sleep(min(5.0, _seconds_until(restaurant.snipe_time) - 30))
+        while _seconds_until(restaurant.snipe_time, allow_next_day=True) > 30:
+            time.sleep(min(5.0, _seconds_until(restaurant.snipe_time, allow_next_day=True) - 30))
 
     # 1. Warm connection
     t0 = time.perf_counter()
