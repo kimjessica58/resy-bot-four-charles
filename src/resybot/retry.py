@@ -15,11 +15,13 @@ EARLY_START_MS = 250
 
 
 def _seconds_until(snipe_time_str: str) -> float:
-    """Return seconds until snipe time today, or 0 if already past."""
+    """Return seconds until snipe time. If it's already past today, target tomorrow."""
     now = datetime.now()
     h, m, s = (int(x) for x in snipe_time_str.split(":"))
     target = now.replace(hour=h, minute=m, second=s, microsecond=0)
-    return max(0.0, (target - now).total_seconds())
+    if target <= now:
+        target += timedelta(days=1)
+    return (target - now).total_seconds()
 
 
 def _find_nearby_date_with_slots(
