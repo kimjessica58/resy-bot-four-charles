@@ -67,6 +67,23 @@ restaurants:
       - time: "17:30:00"       # 5:30 PM
       - time: "17:00:00"       # 5:00 PM
 
+  - name: "The Four Horsemen"
+    venue_id: 2492
+    days_ahead: 30
+    party_size: 3
+    snipe_time: "07:00:00"        # Reservations drop at 7 AM
+    preferences:
+      - time: "19:00:00"       # 7:00 PM
+      - time: "19:30:00"       # 7:30 PM
+      - time: "20:00:00"       # 8:00 PM
+      - time: "20:30:00"       # 8:30 PM
+      - time: "21:00:00"       # 9:00 PM
+      - time: "21:30:00"       # 9:30 PM
+      - time: "18:30:00"       # 6:30 PM
+      - time: "18:00:00"       # 6:00 PM
+      - time: "17:30:00"       # 5:30 PM
+      - time: "17:00:00"       # 5:00 PM
+
   - name: "COTE Flatiron"
     venue_id: 72271
     days_ahead: 30
