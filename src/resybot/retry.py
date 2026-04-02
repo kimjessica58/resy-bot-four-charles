@@ -190,18 +190,22 @@ def retry_booking(
 
             # If rate limited (429), exponential backoff
             if "429" in str(e):
-                backoff = min(2.0, 0.5 * (2 ** (attempt - 20)))  # 0.5s, 1s, 2s max
+                backoff = min(2.0, 0.5 * (2 ** (attempt - 20)))
                 logger.info("Rate limited (429) — backing off %.1fs", backoff)
                 time.sleep(backoff)
                 continue  # skip the normal delay below
+
+            # If server error (500/502/503), retry immediately — Resy isn't
+            # ready yet (happens right at drop time). No delay needed.
+            if "500" in str(e) or "502" in str(e) or "503" in str(e):
+                continue  # skip the normal delay
 
             # If book fails with cached token, it might be stale
             if cached_book_tokens and attempt <= 3:
                 logger.info("Clearing cached tokens (may be stale after error)")
                 cached_book_tokens = {}
 
-        # 150ms delay between attempts — stays under Resy's ~5 req/s limit
-        # even when both local + Render are running simultaneously
+        # 150ms delay between successful attempts to avoid 429
         time.sleep(0.15)
 
     # --- FAILURE ---
