@@ -86,7 +86,7 @@ restaurants:
 
   - name: "COTE Flatiron"
     venue_id: 72271
-    days_ahead: 30
+    days_ahead: 29
     party_size: 2
     snipe_time: "10:00:00"        # Reservations drop at 10 AM
     preferences:
