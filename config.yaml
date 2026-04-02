@@ -17,7 +17,7 @@ notifications:
 restaurants:
   - name: "4 Charles Prime Rib"
     venue_id: 834
-    days_ahead: 21             # Automatically targets the date 21 days from today
+    days_ahead: 20             # Automatically targets the date 21 days from today
     party_size: 3
     snipe_time: "09:00:00"     # Reservations drop at 9 AM
     preferences:
