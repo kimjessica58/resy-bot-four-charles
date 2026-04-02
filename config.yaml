@@ -69,7 +69,7 @@ restaurants:
 
   - name: "The Four Horsemen"
     venue_id: 2492
-    days_ahead: 30
+    days_ahead: 29
     party_size: 3
     snipe_time: "07:00:00"        # Reservations drop at 7 AM
     preferences:
