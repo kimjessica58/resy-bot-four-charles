@@ -53,6 +53,7 @@ def retry_booking(
     client: ResyClient,
     restaurant: RestaurantConfig,
     settings: Settings,
+    no_wait: bool = False,
 ) -> BookingConfirmation | None:
     target_date = restaurant.get_date()
     pref_times = [p.time for p in restaurant.preferences]
@@ -65,18 +66,21 @@ def retry_booking(
     logger.info("  party_size:  %d", restaurant.party_size)
     logger.info("  snipe_time:  %s", restaurant.snipe_time)
     logger.info("  dry_run:     %s", settings.dry_run)
+    logger.info("  no_wait:     %s", no_wait)
     logger.info("  preferences: %s", pref_times)
     logger.info("  timeout:     %ss", settings.retry_timeout_seconds)
     logger.info("=" * 60)
 
     # --- PRE-SNIPE PREPARATION ---
-    # Use polling sleep instead of one long sleep — survives laptop sleep/wake.
-    # Checks the real clock every 5 seconds so we never oversleep.
-    wait = _seconds_until(restaurant.snipe_time, allow_next_day=True)
-    if wait > 30:
-        logger.info("PREP waiting %.0fs until 30s before snipe (polling)", wait - 30)
-        while _seconds_until(restaurant.snipe_time, allow_next_day=True) > 30:
-            time.sleep(min(5.0, _seconds_until(restaurant.snipe_time, allow_next_day=True) - 30))
+    if not no_wait:
+        # Use polling sleep — survives laptop sleep/wake.
+        wait = _seconds_until(restaurant.snipe_time, allow_next_day=True)
+        if wait > 30:
+            logger.info("PREP waiting %.0fs until 30s before snipe (polling)", wait - 30)
+            while _seconds_until(restaurant.snipe_time, allow_next_day=True) > 30:
+                time.sleep(min(5.0, _seconds_until(restaurant.snipe_time, allow_next_day=True) - 30))
+    else:
+        logger.info("PREP no_wait mode — skipping snipe time wait")
 
     # 1. Warm connection
     t0 = time.perf_counter()
@@ -132,7 +136,7 @@ def retry_booking(
     # Poll until early start window (also survives sleep/wake)
     early_start = EARLY_START_MS / 1000
     remaining = _seconds_until(restaurant.snipe_time)
-    if remaining > early_start:
+    if remaining > early_start and not no_wait:
         logger.info("WAITING %.1fs for snipe time %s", remaining, restaurant.snipe_time)
         while _seconds_until(restaurant.snipe_time) > early_start:
             time.sleep(min(1.0, _seconds_until(restaurant.snipe_time) - early_start))

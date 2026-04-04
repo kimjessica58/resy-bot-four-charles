@@ -29,6 +29,11 @@ def main() -> None:
         default=None,
         help="Book only the named restaurant (default: all)",
     )
+    parser.add_argument(
+        "--no-wait",
+        action="store_true",
+        help="Skip waiting for snipe time (for Render/cloud where cron handles timing)",
+    )
     args = parser.parse_args()
 
     config = load_config(args.config)
@@ -49,7 +54,7 @@ def main() -> None:
         for restaurant in restaurants:
             logger.info("=== Processing: %s ===", restaurant.name)
             try:
-                confirmation = retry_booking(client, restaurant, config.settings)
+                confirmation = retry_booking(client, restaurant, config.settings, no_wait=args.no_wait)
                 notify_all(
                     notifiers,
                     restaurant.name,
