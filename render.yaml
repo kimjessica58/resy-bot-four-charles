@@ -4,7 +4,7 @@ services:
     runtime: python
     buildCommand: pip install -r requirements.txt && pip install -e .
     startCommand: python -m resybot -c config.yaml --no-wait --restaurant "4 Charles Prime Rib"
-    schedule: "57 12 * * *"  # 8:57 AM ET (UTC-4)
+    schedule: "58 12 * * *"  # 8:58 AM ET (UTC-4), bot waits for exact 9:00:00
     envVars:
       - key: TZ
         value: America/New_York

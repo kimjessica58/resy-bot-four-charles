@@ -72,15 +72,15 @@ def retry_booking(
     logger.info("=" * 60)
 
     # --- PRE-SNIPE PREPARATION ---
-    if not no_wait:
-        # Use polling sleep — survives laptop sleep/wake.
-        wait = _seconds_until(restaurant.snipe_time, allow_next_day=True)
-        if wait > 30:
-            logger.info("PREP waiting %.0fs until 30s before snipe (polling)", wait - 30)
-            while _seconds_until(restaurant.snipe_time, allow_next_day=True) > 30:
-                time.sleep(min(5.0, _seconds_until(restaurant.snipe_time, allow_next_day=True) - 30))
-    else:
-        logger.info("PREP no_wait mode — skipping snipe time wait")
+    wait = _seconds_until(restaurant.snipe_time, allow_next_day=True)
+    if no_wait and wait > 180:
+        # no_wait mode but snipe is far away — skip (shouldn't happen with correct cron)
+        logger.info("PREP no_wait mode — snipe is %.0fs away, proceeding immediately", wait)
+    elif wait > 30:
+        # Wait until 30s before snipe (polling sleep survives laptop sleep/wake)
+        logger.info("PREP waiting %.0fs until 30s before snipe (polling)", wait - 30)
+        while _seconds_until(restaurant.snipe_time, allow_next_day=True) > 30:
+            time.sleep(min(5.0, _seconds_until(restaurant.snipe_time, allow_next_day=True) - 30))
 
     # 1. Warm connection
     t0 = time.perf_counter()
@@ -136,7 +136,7 @@ def retry_booking(
     # Poll until early start window (also survives sleep/wake)
     early_start = EARLY_START_MS / 1000
     remaining = _seconds_until(restaurant.snipe_time)
-    if remaining > early_start and not no_wait:
+    if remaining > early_start:
         logger.info("WAITING %.1fs for snipe time %s", remaining, restaurant.snipe_time)
         while _seconds_until(restaurant.snipe_time) > early_start:
             time.sleep(min(1.0, _seconds_until(restaurant.snipe_time) - early_start))
