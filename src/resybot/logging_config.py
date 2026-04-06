@@ -25,9 +25,11 @@ def setup_logging(config: LoggingConfig) -> None:
     console_handler.setLevel(getattr(logging, config.level.upper()))
     console_handler.setFormatter(logging.Formatter(fmt, datefmt=datefmt))
 
-    # Suppress noisy httpx/httpcore debug logs in console
+    # Suppress noisy third-party debug logs
     logging.getLogger("httpx").setLevel(logging.WARNING)
     logging.getLogger("httpcore").setLevel(logging.WARNING)
+    logging.getLogger("hpack").setLevel(logging.WARNING)
+    logging.getLogger("h2").setLevel(logging.WARNING)
 
     logging.basicConfig(
         level=logging.DEBUG,
